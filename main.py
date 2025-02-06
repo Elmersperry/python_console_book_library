@@ -1,11 +1,13 @@
 from library import Book, Library, ConsoleInterface
+from db import CSVStorage
 
 def main():
-    library = Library()
-    console = ConsoleInterface()
+    csv_storage = CSVStorage("books.csv")
+    library = Library(storage=csv_storage)
+    console = ConsoleInterface(source=library)
 
-    console.main_menu()
-    console.process_main_menu()
+    while True:
+        console.main_menu()
 
     # book_1 = Book(title="Капитанская дочка", author="А. С. Пушкин", year=1836, genre="Роман")
     # book_2 = Book(title="Герой нашего времени", author="М. Ю. Лермонтов", year=1836, genre="Роман")

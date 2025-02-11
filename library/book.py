@@ -19,6 +19,7 @@ class Book:
         self._genre = genre
         self.year = year
         self.__isbn = uuid.uuid4().hex[:9]
+        self.id = None
 
 
     def get_info(self):
@@ -84,17 +85,38 @@ class Book:
         else:
             raise ValueError("Неизвестный жанр")
 
+    @property
+    def isbn(self):
+        return self.__isbn
+
+    @isbn.setter
+    def isbn(self, isbn):
+        self.__isbn = isbn
+
     def get_book_age(self):
         current_year = datetime.today().year
         return current_year - self._year
 
     def to_dict(self):
-        data = {"author": self.author,
+        data = {"id": self.id,
+                "author": self.author,
                 "title": self.title,
                 "year": self.year,
                 "genre": self.genre,
                 "ISBN": self.__isbn}
         return data
+
+    @classmethod
+    def from_dict(cls, book_data):
+        book = Book(
+            author=book_data["author"],
+            title=book_data["title"],
+            year=book_data["year"],
+            genre=book_data["genre"]
+        )
+        book.isbn = book_data["isbn"]
+        book.id = book_data["id"]
+        return book
 
 # book = Book(title="Капитанская дочка", author="А. С. Пушкин", year=1836, genre="Роман")
 # print(book.get_info())

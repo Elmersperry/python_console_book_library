@@ -34,8 +34,10 @@ class ConsoleInterface:
 
     def show_books(self):
         books = self.library.get_books()
-        for id_, book in books.items():
-            print(f"{id_}.{book.get_info()}")
+        # for id_, book in books.items():
+        #     print(f"{id_}.{book.get_info()}")
+        for book in books:
+            print(book.get_info())
         self.footer_menu()
 
     def add_book(self):

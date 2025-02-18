@@ -23,9 +23,6 @@ class Library:
             return book
         raise ValueError("Неверный формат книги!")
 
-    # def get_book_info(self, book_id):
-    #     return self.books.get(book_id)
-
     def get_book_by_id(self, book_id):
         book = self.books.get(book_id)
         if book:
@@ -33,31 +30,47 @@ class Library:
         raise ValueError("Такой книги нет")
 
     def get_book_by_isbn(self, isbn):
-        for id_, book in self.books.items():
-            if isbn == book.get("isbn"):
-                return id_, book
-        raise ValueError("Такой книги нет")
+        results = []
+        books = self.storage.read_data()
+        for item in books:
+            if isbn.lower() in item["ISBN"].lower():
+                results.append(Book.from_dict(item))
+        return results
+        # for id_, book in self.books.items():
+        #     if isbn == book.get("isbn"):
+        #         return id_, book
+        # raise ValueError("Такой книги нет")
 
     def get_books(self):
         books = self.storage.read_data()
         books_obj = []
         for book in books:
+            books_obj.append(book)
+        return books_obj
 
-        return self.books
+    def get_books_by_request(self, request):
+        results = []
+        books = self.storage.read_data()
+        for item in books:
+                if request.lower() in item["author"].lower() or item["title"].lower or item["ISBN"].lower():
+                    results.append(Book.from_dict(item))
+        return results
 
     def get_books_by_author(self, author):
-        books = {}
-        for id_, book in self.books.items():
-            if author.lower() in book.author.lower():
-                books[id_] = book
-        return books
+        results = []
+        books = self.storage.read_data()
+        for item in books:
+                if author.lower() in item["author"].lower():
+                    results.append(Book.from_dict(item))
+        return results
 
     def get_books_by_title(self, title):
-        books = {}
-        for id_, book in self.books.items():
-            if title.lower() in book.title.lower():
-                books[id_] = book
-        return books
+        results = []
+        books = self.storage.read_data()
+        for item in books:
+            if title.lower() in item["title"].lower():
+                results.append(Book.from_dict(item))
+        return results
 
     def search_book(self, query):
         results = {}
@@ -66,13 +79,20 @@ class Library:
                 results[id_] = book
         return results
 
-    def book_delete(self, id_):
-        if id_.isdigit():
-            if int(id_) in self.books:
-                return self.books.pop(int(id_))
-            else:
-                raise ValueError("Неверный или некорректный id")
+    def book_delete(self, isbn: str):
+        books = self.storage.read_data()
+        for i, book in enumerate(books):
+            if book["isbn"].lower() == isbn.lower():
+                books.pop(i)
 
-    # @classmethod
-    # def get_book_count(cls):
-    #     return cls.id_
+        self.storage.file.seek(33)
+        self.storage.file.truncate()
+
+        for book in books:
+            self.add_book(Book.from_dict(book))
+
+        # if id_.isdigit():
+        #     if int(id_) in self.books:
+        #         return self.books.pop(int(id_))
+        #     else:
+        #         raise ValueError("Неверный или некорректный id")

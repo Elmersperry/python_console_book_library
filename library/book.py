@@ -114,7 +114,7 @@ class Book:
             year=book_data["year"],
             genre=book_data["genre"]
         )
-        book.isbn = book_data["isbn"]
+        book.isbn = book_data["ISBN"]
         book.id = book_data["id"]
         return book
 

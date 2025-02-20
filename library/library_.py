@@ -1,4 +1,5 @@
 from library.book import Book
+from db.csv_storage import CSVStorage
 
 class Library:
     def __init__(self, storage):
@@ -96,3 +97,6 @@ class Library:
         #         return self.books.pop(int(id_))
         #     else:
         #         raise ValueError("Неверный или некорректный id")
+
+    def dump_books_data(self, filename):
+        self.storage.dump_books_to_json(filename)

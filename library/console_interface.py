@@ -1,5 +1,6 @@
 import sys
 from library import Book
+from db import CSVStorage
 
 class ConsoleInterface:
     def __init__(self, source):
@@ -12,6 +13,8 @@ class ConsoleInterface:
         print("2. Добавить книгу")
         print("3. Поиск книг")
         print("4. Удалить книгу")
+        print("5. Сохранить книги")
+        print("6. Показать количество книг")
         print("0. Выйти")
 
         self.process_main_menu()
@@ -27,10 +30,19 @@ class ConsoleInterface:
                 self.search_book()
             case "4":
                 self.delete_book()
+            case "5":
+                self.save_books()
+            case "6":
+                self.show_books_number()
             case "0":
                 sys.exit()
             case _:
                 print("Выберите нужный пункт меню!")
+
+    def show_books_number(self):
+        books = self.library.get_books()
+        print(f"Число книг - {len(books)}")
+        self.footer_menu()
 
     @staticmethod
     def show_books_info(books):
@@ -39,6 +51,7 @@ class ConsoleInterface:
 
     def show_books(self):
         books = self.library.get_books()
+        # show_books_info(books)
         self.show_books_info(books)
         self.footer_menu()
 
@@ -109,6 +122,17 @@ class ConsoleInterface:
         else:
             print("Такой книги нет!")
         self.footer_menu()
+
+    def save_books(self):
+        filename = input("Введите имя файла")
+        try:
+            self.library.dump_books_data(filename)
+            print(f"Данные книг успешно сохранены в файл {filename}.json")
+        except Exception as e:
+            print("Операция завершена неудачно")
+            print(e)
+        finally:
+            self.footer_menu()
 
     def footer_menu(self):
         print("Введите 1 для выхода в главное меню")
